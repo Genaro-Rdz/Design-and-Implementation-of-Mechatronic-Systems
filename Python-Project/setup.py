@@ -1,0 +1,7 @@
+FABRICANTE = "International"
+MODELO = "ESP32"
+SERIAL = "0001"
+VERSION = "v1.0"
+
+PIN_OUT1 = 2
+PIN_OUT2 = 4
