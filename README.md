@@ -36,7 +36,7 @@ The project is modularly designed, safely isolating the low-voltage logic contro
 
 ### 1. Hardware Assembly
 Assemble the physical circuit following the schematics provided in the `/hardware` folder. 
-> ⚠️ **Safety Warning:** This system handles currents >5A. Ensure the use of appropriate gauge wiring (AWG 16 minimum) for the power stage and include a master kill-switch before the MOSFET array.
+> ⚠️ **Safety Warning:** This system handles currents <= 5A. Ensure the use of appropriate gauge wiring (AWG 16 minimum) for the power stage and include a master kill-switch before the MOSFET array.
 
 ### 2. Firmware (ESP32)
 Flash the ESP32 with the latest MicroPython firmware. Upload the scripts from the `/firmware` folder to the board using tools like Thonny IDE or `mpremote`.
