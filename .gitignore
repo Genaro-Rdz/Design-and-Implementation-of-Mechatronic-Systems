@@ -1,0 +1,11 @@
+# Configuración local de VS Code (El fantasma)
+.vscode/
+
+# Basura de Python / MicroPython
+__pycache__/
+*.py[cod]
+
+# Archivos temporales de LTspice (Los que crea al simular)
+*.log
+*.raw
+*.op.raw
