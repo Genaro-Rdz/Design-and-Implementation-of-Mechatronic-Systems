@@ -22,6 +22,10 @@ initialized = False
 def commands(cmd):
     global initialized
     cmd = cmd.strip().upper()
+    
+        # Ignore empty lines
+    if not cmd:
+        return
 
     if cmd == "A":
         print(initialized)
@@ -35,7 +39,24 @@ def commands(cmd):
 
     elif cmd == "*IDN?":
         print(f"{setup.FABRICANTE},{setup.MODELO},{setup.SERIAL},{setup.VERSION}")
+    # Turn all outputs ON or OFF
+    else:
+        
+        if cmd == "ON ALL":
+            if not initialized:
+                print("ERROR: System not initialized, send *INIT first")
+                return
+            for pin in OUTPUTS.values():
+                pin.on()
 
+        elif cmd == "OFF ALL":
+            if not initialized:
+                print("ERROR: System not initialized, send *INIT first")
+                return
+            for pin in OUTPUTS.values():
+                pin.off()
+                
+    # OUTn ON / OUTn OFF
     else:
         parts = cmd.split()
         if len(parts) == 2 and parts[0].startswith("OUT") and parts[1] in ("ON", "OFF"):
@@ -63,5 +84,5 @@ def reset():
     # Turn off all outputs and clear initialization flag
     global initialized
     initialized = False
-    output1.off()
-    output2.off()
+    for pin in OUTPUTS.values():
+        pin.off()
