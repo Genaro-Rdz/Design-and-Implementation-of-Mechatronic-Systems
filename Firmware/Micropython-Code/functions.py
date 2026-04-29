@@ -2,9 +2,20 @@ from machine import Pin
 import setup
 
 # Initialize output pins using GPIO numbers defined in setup
-output1 = Pin(setup.PIN_OUT1, Pin.OUT)
-output2 = Pin(setup.PIN_OUT2, Pin.OUT)
-
+OUTPUTS = {
+    1:  Pin(setup.PIN_OUT1,  Pin.OUT),
+    2:  Pin(setup.PIN_OUT2,  Pin.OUT),
+    3:  Pin(setup.PIN_OUT3,  Pin.OUT),
+    4:  Pin(setup.PIN_OUT4,  Pin.OUT),
+    5:  Pin(setup.PIN_OUT5,  Pin.OUT),
+    6:  Pin(setup.PIN_OUT6,  Pin.OUT),
+    7:  Pin(setup.PIN_OUT7,  Pin.OUT),
+    8:  Pin(setup.PIN_OUT8,  Pin.OUT),
+    9:  Pin(setup.PIN_OUT9,  Pin.OUT),
+    10: Pin(setup.PIN_OUT10, Pin.OUT),
+    11: Pin(setup.PIN_OUT11, Pin.OUT),
+    12: Pin(setup.PIN_OUT12, Pin.OUT),
+}
 # Tracks whether *INIT has been received before allowing output control
 initialized = False
 
@@ -12,36 +23,41 @@ def commands(cmd):
     global initialized
     cmd = cmd.strip().upper()
 
-    # Debug command: prints current initialization state
     if cmd == "A":
         print(initialized)
 
-    # *INIT: enables output control
     elif cmd == "*INIT":
         initialized = True
         print("Initialized")
 
-    # *RST: resets system to default state
     elif cmd == "*RST":
         reset()
 
-    # *IDN?: returns device identification string
     elif cmd == "*IDN?":
         print(f"{setup.FABRICANTE},{setup.MODELO},{setup.SERIAL},{setup.VERSION}")
 
-    # Output commands: only allowed after *INIT
-    elif cmd in ("OUT1 ON", "OUT1 OFF", "OUT2 ON", "OUT2 OFF"):
-        if not initialized:
-            print("ERROR: System not initialized, send *INIT first")
+    else:
+        parts = cmd.split()
+        if len(parts) == 2 and parts[0].startswith("OUT") and parts[1] in ("ON", "OFF"):
+            try:
+                n = int(parts[0][3:])
+            except ValueError:
+                print(f"ERROR: Unknown command: {cmd}")
+                return
+
+            if n not in OUTPUTS:
+                print(f"ERROR: Output {n} not available (valid: 1-12)")
+                return
+
+            if not initialized:
+                print("ERROR: System not initialized, send *INIT first")
+                return
+
+            OUTPUTS[n].on() if parts[1] == "ON" else OUTPUTS[n].off()
+
         else:
-            if cmd == "OUT1 ON":
-                output1.on()
-            elif cmd == "OUT1 OFF":
-                output1.off()
-            elif cmd == "OUT2 ON":
-                output2.on()
-            elif cmd == "OUT2 OFF":
-                output2.off()
+            print(f"ERROR: Unknown command: {cmd}")
+
 
 def reset():
     # Turn off all outputs and clear initialization flag
